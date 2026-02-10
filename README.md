@@ -1,10 +1,17 @@
-# Petri Net Editor
+# Bachelor Thesis (Spring 2026)
+### Joschka Eckert-Boulet, Elias Storm Vedel Jørgensen and Lucas Bjerg Frandsen
+
+This readme is WIP. For the time being, we've forked the petrinet-io repo, and subsequently left the fork network to work on extending it privately.
+
+# Data Extended Petri Net Editor
 
 A web-based Petri net modeling and simulation tool built with diagram-js. This editor allows you to create, edit, simulate, and export Petri nets using an intuitive visual interface.
 
 ![](docs/movie.gif)
 
 Checkout the [live demo](https://processintelligence.github.io/petrinet-io/) 🖥️.
+
+**Note:** This live demo is that of petrinet-io, not our data extended version.
 
 ## Installation
 
