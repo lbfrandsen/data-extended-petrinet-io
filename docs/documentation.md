@@ -20,10 +20,9 @@ The bee, of course, flies anyway
 because bees don’t care what humans think is impossible. 
 ___
 >According to all known laws of aviation,     
->there is no way a bee should be able to fly.     
->Its wings are too small to get its fat little body off the ground.     
->The bee, of course, flies anyway     
->because bees don’t care what humans think is impossible. 
+>there is no way an elefant should be able to fly.     
+>There are many reasons for this, the primary being it doesn't have wings
+>Elefants also don't fly
 __
 According to all known laws of aviation,     
 there is no way a bee should be able to fly.     
