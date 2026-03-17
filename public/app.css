@@ -2,10 +2,10 @@ html,
 body,
 #container,
 #canvas,
-#canvas > div {
-	font-family: sans-serif;
-	height: 100%;
-	margin: 0;
+#canvas>div {
+  font-family: sans-serif;
+  height: 100%;
+  margin: 0;
 }
 
 .bottom-buttons {
@@ -22,4 +22,63 @@ body,
 .bottom-buttons a.active {
   opacity: 1;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.place-legend {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 260px;
+  max-height: 120px;
+  overflow: hidden;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #999;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  padding: 10px 12px;
+  box-sizing: border-box;
+  transition:
+    width 0.2s ease,
+    max-height 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.place-legend:hover {
+  width: 265px;
+  max-height: 320px;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.24);
+}
+
+.place-legend__title {
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.place-legend__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.place-legend__row {
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.place-legend:hover .place-legend__row {
+  white-space: normal;
+  word-break: break-word;
+}
+
+.place-legend__name {
+  font-weight: 600;
+}
+
+.place-legend__type,
+.place-legend__empty {
+  color: #333;
 }
