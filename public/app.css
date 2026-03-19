@@ -57,6 +57,20 @@ body,
   margin-bottom: 8px;
 }
 
+.place-legend__section + .place-legend__section {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #e7e7e7;
+}
+
+.place-legend__subtitle {
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 4px;
+}
+
 .place-legend__list {
   display: flex;
   flex-direction: column;
