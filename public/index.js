@@ -1,44 +1,27 @@
 import PetriNetIO from '../lib/index'; // or from 'petrinet-io' after install
 import { showAlert } from '../lib/services/DialogService.js';
+import { getDocumentation } from '../lib/providers/DocumentationProvider.js';
 
 const petrinetio = new PetriNetIO({
   container: '#container'
 });
 
-let documentationCache = null;
-
-async function loadDocumentation() {
-  if (documentationCache !== null) {
-    return documentationCache;
+function loadDocumentation() {
+  let docsText;
+  try {
+    docsText = getDocumentation();
+  } catch (error) {
+    console.error('Failed to load documentation:', error);
+    docsText = `Failed to load documentation: ${error.message}`;
   }
-
-  const response = await fetch('/docs/documentation.md');
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-
-  documentationCache = await response.text();
-  return documentationCache;
+  showAlert({
+    title: 'Documentation and Credit',
+    message: docsText,
+    markdown: true
+  });
 }
 
-document.getElementById('js-docs').addEventListener('click', async () => {
-  try {
-    const documentation = await loadDocumentation();
-
-    showAlert({
-      title: 'Documentation and Credit',
-      message: documentation,
-      markdown: true
-    });
-  } catch (error) {
-    showAlert({
-      title: 'Documentation and Credit',
-      message: `Failed to load docs/documentation.md (${error.message}).`
-    });
-  }
-});
-
+document.getElementById('js-docs').addEventListener('click', loadDocumentation);
 
 document.getElementById('js-open-pnml').addEventListener('click', () => {
   petrinetio.loadFromFile();
