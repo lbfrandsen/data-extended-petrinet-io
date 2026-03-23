@@ -1,4 +1,42 @@
 // Enhanced helper to extract elements for comparison including IDs, waypoints, tokens, etc.
+function getToolspecificPropertyValue(node, key) {
+    const toolspecificNodes = Array.from(
+        node.querySelectorAll(':scope > toolspecific[tool="petrinet.io"], graphics > toolspecific[tool="petrinet.io"]')
+    );
+
+    for (const toolspecificNode of toolspecificNodes) {
+        const propertyNode =
+            toolspecificNode.querySelector(`:scope > property[key="${key}"]`) ||
+            toolspecificNode.querySelector(`property[key="${key}"]`);
+
+        if (!propertyNode) {
+            continue;
+        }
+
+        const valueAttr = propertyNode.getAttribute('value');
+        if (valueAttr !== null) {
+            return valueAttr;
+        }
+
+        const textNode = propertyNode.querySelector(':scope > text') || propertyNode.querySelector('text');
+        return textNode ? textNode.textContent : '';
+    }
+
+    return null;
+}
+
+function canonicalizeMarkingJson(rawMarking) {
+    if (rawMarking === null) {
+        return null;
+    }
+
+    try {
+        return JSON.stringify(JSON.parse(rawMarking));
+    } catch (error) {
+        return `__INVALID_JSON__:${rawMarking}`;
+    }
+}
+
 function extractElementsForComparison(pnmlString) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(pnmlString, 'text/xml');
@@ -15,6 +53,8 @@ function extractElementsForComparison(pnmlString) {
         const markingNode = p.querySelector('initialMarking > text');
         const positionNode = p.querySelector('graphics > position');
         const dimensionNode = p.querySelector('graphics > dimension');
+        const placeType = getToolspecificPropertyValue(p, 'placeType') ?? getToolspecificPropertyValue(p, 'place_type');
+        const rawMarking = getToolspecificPropertyValue(p, 'marking');
         
         return {
             id: p.getAttribute('id'),
@@ -25,7 +65,9 @@ function extractElementsForComparison(pnmlString) {
             width: dimensionNode?.getAttribute('x') || '0',
             height: dimensionNode?.getAttribute('y') || '0',
             labelOffsetX: labelOffsetNode?.getAttribute('x') || '0',
-            labelOffsetY: labelOffsetNode?.getAttribute('y') || '0'
+            labelOffsetY: labelOffsetNode?.getAttribute('y') || '0',
+            placeType: placeType,
+            markingJson: canonicalizeMarkingJson(rawMarking)
         };
     }).sort((a, b) => a.id.localeCompare(b.id));
     
@@ -114,6 +156,12 @@ function comparePnml(originalPnml, exportedPnml) {
             } else if (place.labelOffsetY !== exp.labelOffsetY) {
                 errors.push(`Place ${i} labelOffsetY: ${place.labelOffsetY} vs ${exp.labelOffsetY}`);
             }
+            if (place.placeType !== exp.placeType) {
+                errors.push(`Place ${i} placeType: "${place.placeType}" vs "${exp.placeType}"`);
+            }
+            if (place.markingJson !== exp.markingJson) {
+                errors.push(`Place ${i} marking: "${place.markingJson}" vs "${exp.markingJson}"`);
+            }
         });
     }
     
@@ -192,7 +240,8 @@ async function testAllPnmlFiles() {
         'and-split.pnml',
         'and-join.pnml',
         'xor-split.pnml',
-        'xor-join.pnml'
+        'xor-join.pnml',
+        'typed-tokens.pnml'
     ];
 
     console.log('Testing all PNML files with full property checking...\n');
@@ -250,4 +299,3 @@ if (typeof window !== 'undefined') {
 /*const script = document.createElement('script');
 script.src = 'test-pnmls/pnml_test.js';
 document.head.appendChild(script);*/
-

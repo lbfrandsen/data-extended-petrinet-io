@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+    <net id="ptnet1" type="http://www.pnml.org/version-2009/grammar/ptnet">
+        <page id="top-level">
+            <place id="p1">
+                <graphics>
+                    <position x="100" y="120" />
+                    <dimension x="50" y="50" />
+                </graphics>
+                <name>
+                    <text>TypedPlace</text>
+                    <graphics>
+                        <offset x="0" y="0" />
+                    </graphics>
+                </name>
+                <initialMarking>
+                    <text>3</text>
+                </initialMarking>
+                <toolspecific tool="petrinet.io" version="1.0">
+                    <property key="placeType" value="int*string*bool" />
+                    <property key="marking" format="json">
+                        <text>[[1,"alpha",true],[2,"beta",false],[3,"gamma",true]]</text>
+                    </property>
+                </toolspecific>
+            </place>
+        </page>
+    </net>
+</pnml>
