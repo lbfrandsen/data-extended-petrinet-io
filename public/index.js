@@ -21,6 +21,8 @@ function loadDocumentation() {
   });
 }
 
+
+
 document.getElementById('js-docs').addEventListener('click', loadDocumentation);
 
 document.getElementById('js-open-pnml').addEventListener('click', () => {
