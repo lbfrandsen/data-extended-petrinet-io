@@ -1,5 +1,5 @@
 import PetriNetIO from '../lib/index'; // or from 'petrinet-io' after install
-import { showAlert } from '../lib/services/DialogService.js';
+import { showAlert, showRulesDialog } from '../lib/services/DialogService.js';
 import { getDocumentation } from '../lib/providers/DocumentationProvider.js';
 
 const petrinetio = new PetriNetIO({
@@ -21,7 +21,7 @@ function loadDocumentation() {
   });
 }
 
-
+document.getElementById('rules').addEventListener('click', showRulesDialog);
 
 document.getElementById('js-docs').addEventListener('click', loadDocumentation);
 
