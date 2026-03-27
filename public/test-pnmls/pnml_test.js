@@ -81,7 +81,6 @@ function extractElementsForComparison(pnmlString) {
         return {
             id: t.getAttribute('id'),
             name: nameNode?.textContent || '',
-            isEmpty: !!t.querySelector('toolspecific[tool="petrinet.io"] property[key="transitionType"][value="empty"]'),
             x: positionNode?.getAttribute('x') || '0',
             y: positionNode?.getAttribute('y') || '0',
             width: dimensionNode?.getAttribute('x') || '0',
@@ -173,7 +172,6 @@ function comparePnml(originalPnml, exportedPnml) {
             const exp = exported.transitions[i];
             if (trans.id !== exp.id) errors.push(`Transition ${i} ID: "${trans.id}" vs "${exp.id}"`);
             if (trans.name !== exp.name) errors.push(`Transition ${i} name: "${trans.name}" vs "${exp.name}"`);
-            if (trans.isEmpty !== exp.isEmpty) errors.push(`Transition ${i} type: empty=${trans.isEmpty} vs ${exp.isEmpty}`);
             if (trans.x !== exp.x) errors.push(`Transition ${i} x: ${trans.x} vs ${exp.x}`);
             if (trans.y !== exp.y) errors.push(`Transition ${i} y: ${trans.y} vs ${exp.y}`);
             if (trans.width !== exp.width) errors.push(`Transition ${i} width: ${trans.width} vs ${exp.width}`);

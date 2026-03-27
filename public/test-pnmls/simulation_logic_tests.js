@@ -71,7 +71,7 @@ if (typeof window !== 'undefined' && window.testSimulationLogic) {
             // 3. Find the transition to fire by name (not place!)
             const allElements = elementRegistry.getAll();
             const transitionToFire = allElements.find(el => 
-                (el.type === "petri:transition" || el.type === "petri:empty_transition") 
+                el.type === "petri:transition"
                 && el.businessObject?.name === test.fired
             );
             
@@ -92,8 +92,7 @@ if (typeof window !== 'undefined' && window.testSimulationLogic) {
             
             // 6. Get enabled transitions after firing
             const enabledTransitions = allElements
-                .filter(el => (el.type === "petri:transition" || el.type === "petri:empty_transition")
-                    && simulation.isTransitionEnabled(el))
+                .filter(el => el.type === "petri:transition" && simulation.isTransitionEnabled(el))
                 .map(el => el.businessObject?.name || el.id);
             
             // 7. Compare with expected results
