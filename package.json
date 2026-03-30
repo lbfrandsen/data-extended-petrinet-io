@@ -32,6 +32,7 @@
     "diagram-js-direct-editing": "^3.2.0",
     "diagram-js-grid": "^1.1.0",
     "jspdf": "^4.2.1",
+    "sqlite3": "^6.0.1",
     "svg2pdf.js": "^2.6.0",
     "tiny-svg": "^4.1.3"
   },
