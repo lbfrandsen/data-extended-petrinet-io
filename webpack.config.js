@@ -30,6 +30,10 @@ module.exports = {
           globOptions: {
             ignore: ['**/index.html']
           }
+        },
+        {
+          from: 'node_modules/sql.js/dist/sql-wasm.wasm',
+          to: 'sql-wasm.wasm'
         }
       ]
     })
