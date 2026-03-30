@@ -6,31 +6,31 @@ if (typeof window !== 'undefined' && window.testSimulationLogic) {
         name: "Sequence",
         fired: "A",
         tokens: {p1: 0, p2: 1, p3: 0},
-        transitions_that_can_fire: ["B"]
+        transitionsThatCanFire: ["B"]
     },
     {
         name: "And Split",
         fired: "A",
         tokens: {p1: 0, p2: 1, p3: 1},
-        transitions_that_can_fire: ["B", "C"]
+        transitionsThatCanFire: ["B", "C"]
     },
     {
         name: "And Join",
         fired: "A",
         tokens: {p1: 0, p2: 1, p3: 1, p4: 0},
-        transitions_that_can_fire: ["B"]
+        transitionsThatCanFire: ["B"]
     },
     {
         name: "Xor Split",
         fired: "A",
         tokens: {p1: 0, p2: 1},
-        transitions_that_can_fire: ["B", "C"]
+        transitionsThatCanFire: ["B", "C"]
     }, 
     {
         name: "Xor Join",
         fired: "A",
         tokens: {p1: 0, p2: 1, p3: 1},
-        transitions_that_can_fire: ["B", "C"]
+        transitionsThatCanFire: ["B", "C"]
     }];
 
     // Test simulation firing logic
@@ -108,7 +108,7 @@ if (typeof window !== 'undefined' && window.testSimulationLogic) {
             });
             
             // Check enabled transitions (compare names)
-            const expectedEnabled = test.transitions_that_can_fire.sort();
+            const expectedEnabled = test.transitionsThatCanFire.sort();
             const actualEnabled = enabledTransitions.sort();
             
             if (JSON.stringify(expectedEnabled) !== JSON.stringify(actualEnabled)) {
@@ -142,5 +142,6 @@ if (typeof window !== 'undefined' && window.testSimulationLogic) {
 
 
 /*const script = document.createElement('script');
-script.src = 'test-pnmls/simulation_logic_tests.js'; 
+script.src = 'test-pnmls/simulationLogicTests.js'; 
 document.head.appendChild(script);*/
+

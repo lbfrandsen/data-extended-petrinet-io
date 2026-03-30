@@ -295,5 +295,5 @@ if (typeof window !== 'undefined') {
 
 /* to run the test run this code in the console of the browser
 /*const script = document.createElement('script');
-script.src = 'test-pnmls/pnml_test.js';
+script.src = 'test-pnmls/pnmlTest.js';
 document.head.appendChild(script);*/
