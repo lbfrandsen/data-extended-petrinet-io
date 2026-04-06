@@ -294,12 +294,20 @@ body,
   padding: 8px;
 }
 
+.sql-dialog__output-count {
+  margin-top: 6px;
+  color: #8a8a8a;
+  font-size: 11px;
+  text-align: left;
+}
+
 .sql-dialog__divider,
 .sql-dialog__list,
 .sql-dialog__actions,
 .sql-dialog__output-divider,
 .sql-dialog__output-label,
-.sql-dialog__output {
+.sql-dialog__output,
+.sql-dialog__output-count {
   display: none;
 }
 
@@ -317,6 +325,7 @@ body,
 
 .sql-dialog:hover .sql-dialog__output-divider,
 .sql-dialog:hover .sql-dialog__output-label,
-.sql-dialog:hover .sql-dialog__output {
+.sql-dialog:hover .sql-dialog__output,
+.sql-dialog:hover .sql-dialog__output-count {
   display: block;
 }
