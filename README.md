@@ -1,4 +1,4 @@
-# Documentation and Credits
+# READ ME
 
 This editor extends the original petrinet-io project with typed Colored Petri Net features and a database-backed simulation extension for data-aware process modeling.
 
