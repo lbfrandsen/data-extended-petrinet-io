@@ -21,24 +21,7 @@ function loadDocumentation() {
   });
 }
 
-function uploadDbFile() {
-  if (!globalThis._db || typeof globalThis._db.loadFromFile !== 'function') {
-    console.error('Database service is not ready yet');
-    return;
-  }
-
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.db,.sqlite';
-  input.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) globalThis._db.loadFromFile(file);
-  });
-  input.click();
-}
-
 document.getElementById('rules').addEventListener('click', showRulesDialog);
-document.getElementById('js-upload-db').addEventListener('click', uploadDbFile);
 
 document.getElementById('js-docs').addEventListener('click', loadDocumentation);
 
