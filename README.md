@@ -1,89 +1,123 @@
-# Bachelor Thesis (Spring 2026)
-### Joschka Eckert-Boulet, Elias Storm Vedel Jørgensen and Lucas Bjerg Frandsen
+# Documentation and Credits
 
-This readme is WIP. For the time being, we've forked the petrinet-io repo, and subsequently left the fork network to work on extending it privately.
+This editor extends the original petrinet-io project with typed Colored Petri Net features and a database-backed simulation extension for data-aware process modeling.
 
-# Data Extended Petri Net Editor
+## Original Creator
+- Andrea Burattin
 
-A web-based Petri net modeling and simulation tool built with diagram-js. This editor allows you to create, edit, simulate, and export Petri nets using an intuitive visual interface.
+## Extension Creators
+- Lucas Bjerg Frandsen
+- Joschka Eckert-Boulet
+- Elias Storm Vedel Jørgensen
 
-![](docs/movie.gif)
+## Capabilities
 
-Checkout the [live demo](https://processintelligence.github.io/petrinet-io/) 🖥️.
+### 1) Colored Petri Net Capabilities
+- Places support explicit type definitions (colors): int, real, bool, string, and tuples like <int,string>.
+- Places can also be epsilon typed (empty tuple), represented as e.
+- Typed markings are stored per place, and token counts are synchronized from marking content.
+- Arc inscriptions define variable bindings per token component (examples: <x>, <x,y>, <>) and support multiplicity with \`^n\` or superscript digits.
+- Arc inscriptions are auto-generated from place arity and stay synchronized when place types change.
+- Transition guards can be edited and are validated against available variable types from incoming/outgoing arc inscriptions.
+- Guard expressions support boolean logic and arithmetic comparisons; invalid guards are rejected.
+- Place labels, transition labels, and arc inscription labels are rendered in-canvas, with optional ID label toggling.
 
-**Note:** This live demo is that of petrinet-io, not our data extended version.
+### 2) Database Extension (SQL-backed CPN behavior)
+The database extension adds query-aware and action-aware transition behavior on top of typed Petri net simulation.
 
-## Installation
+#### Database loading and scope
+- You can upload a \`.db\` or \`.sqlite\` file directly in the SQL dialog.
+- Once loaded, it becomes the active in-memory database for all SQL queries/actions.
+- If no database is loaded, SQL-bound transitions are blocked and report diagnostics.
 
-Use the library by installing it via npm into your application using:
+#### Query authoring and transition binding
+- Queries are managed in the QUERIES tab with stable IDs (\`Q1\`, \`Q2\`, ...).
+- Query entries are normalized to \`SELECT ...\`; non-SELECT statements are rejected for query guards.
+- Any transition can be bound to a query from the transition SQL assignment dialog.
+- Bound query IDs are persisted on transition business objects and exported with the model metadata.
 
-```console
-npm install petrinet-io
-```
+#### How queries affect transition enablement
+- During simulation, a transition with a bound query is evaluated against current DB state.
+- If query evaluation fails (missing DB, empty query, removed query, SQL error), transition enabling fails.
+- If a query succeeds, result rows are transformed into variable bindings (column name -> value).
+- The transition is enabled only if at least one row can satisfy:
+  - Arc-inscription token matching and consumption constraints.
+  - Guard evaluation constraints.
+  - Output token producibility constraints.
 
-## Usage
+#### Special COUNT semantics
+- Queries that match \`SELECT COUNT(...)\` are handled specially.
+- They must return exactly one numeric cell.
+- That numeric value is exposed as \`queryCount\` in guard evaluation.
+- This enables compact guards such as threshold checks using live DB-derived counts.
 
-To get started, just include the library and call the construction, providing the element that should contain the editor:
+#### Row-driven execution behavior
+- For row-based queries, each row is a candidate binding.
+- In fully automatic simulation mode, the engine selects one fireable row randomly.
+- In user-driven mode, the UI lets you pick the row and, if configured, manually select consumed tokens.
+- This allows deterministic replay-style behavior even when many rows are fireable.
 
-```js
-import { PetriNetIO } from "petrinet-io";
+#### SQL actions on transition fire
+- Actions are managed in the ACTIONS tab with stable IDs (\`A1\`, \`A2\`, ...).
+- Supported action forms are:
+  - \`INSERT INTO ... VALUES ...\`
+  - \`DELETE FROM ... WHERE ...\`
+- One transition can have multiple bound actions.
+- When a transition fires, bound actions execute before token state updates.
+- If any action fails, firing is aborted and token movement does not proceed.
+- Actions are intentionally powerful: they can irreversibly modify the loaded database.
 
-const pn = new PetriNetIO({
-	container: "#canvas",
-});
-```
+#### Persistence and import/export behavior
+- Query/action entries and transition bindings are included in PNML metadata.
+- Simulation rule metadata and simulation history state are also persisted.
+- The database file itself is not embedded in PNML export.
+- After importing PNML, the DB must be uploaded again to restore SQL-backed behavior.
 
-### Methods
+## Simulation Guide
 
-It is possible to interact with the `pn` object using the different methods. To load a `.pnml` file use:
-```js
-pn.loadFromFile()
-```
-To export the current model as `.pnml`:
-```js
-pn.exportPNML()
-```
-To export the current model as `.tpn`:
-```js
-pn.exportTpn()
-```
-To export the current model as `.svg`:
-```js
-pn.exportSVG()
-```
-To export the current model as `.pdf`:
-```js
-pn.exportPDF()
-```
+### Simulation mode and firing
+- Toggle simulation mode on/off at any time.
+- When simulation is active, transition enablement is continuously recalculated.
+- Clicking an enabled transition fires it.
+- In simulation mode, editing affordances are reduced to prevent accidental model edits.
 
+### Transition colors and meaning
+- White: transition is currently not enabled (idle/blocked).
+- Light green: transition is enabled and can fire now.
+- Plum: transition has fired earlier in the current simulation session, but is not enabled right now.
+- Enabled transitions also show a play triangle marker.
 
-## Complete Vue example
+### Step-back and reset behavior
+- Every successful firing stores a snapshot in simulation history.
+- Step-back restores the previous snapshot (tokens + fired-transition state).
+- Reset returns all places to the token marking saved at the start of the active simulation run.
+- Reset also clears simulation history/fired markers and exits simulation mode.
 
-Open a fully working example in [CodeSandbox](https://codesandbox.io/p/sandbox/elastic-lake-z2mlg8).
+### Rule-driven token generation and consumption
+- Simulation rules support:
+  - Random or user-selected token consumption.
+  - Random or user-provided output production.
+  - Integer/real domains and optional normal-distribution sampling.
+  - Regex-constrained string generation.
+- Generated output values are checked against type/color and guard constraints.
 
-```vue
-<template>
-  <main>
-    <button @click="container.loadFromFile()">load pnml</button>
-    <button @click="container.exportPNML()">export pnml</button>
-    <button @click="container.exportTpn()">export tpn</button>
-    <button @click="container.exportSVG()">export svg</button>
-    <button @click="container.exportPDF()">export pdf</button>
+## Hotkey Guide
 
-    <div id="canvas" style="height: 800px; width: 100%;"></div>
-  </main>
-</template>
+### Simulation and view hotkeys
+- \`s\`: Toggle simulation mode.
+- \`r\`: Reset tokens to initial simulation-state marking and stop simulation.
+- \`b\`: Step back one simulation firing (if history exists).
+- \`t\`: Toggle ID labels visibility for places/transitions.
 
-<script setup>
-import { onMounted } from "vue";
-import { PetriNetIO } from "petrinet-io";
+### Editing hotkeys
+- \`Ctrl+C\` / \`Cmd+C\`: Copy selected elements to internal clipboard.
+- \`Ctrl+V\` / \`Cmd+V\`: Paste copied elements with preserved relative layout.
+- \`Ctrl+Z\` / \`Cmd+Z\`:
+  - In edit mode: undo diagram command history.
+  - In simulation mode: performs step-back in simulation history.
 
-let container = null;
+### Notes on copy/paste
+- Copy/paste is shape-oriented and keeps core shape properties/business object data.
+- Pasted elements receive fresh IDs to avoid ID collisions.
 
-onMounted(() => {
-  container = new PetriNetIO({
-    container: "#canvas",
-  });
-});
-</script>
-```
+(doc is WIP: markdown formatting and content will be refined in the final version)
