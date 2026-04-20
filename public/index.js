@@ -1,23 +1,14 @@
 import PetriNetIO from '../lib/index'; // or from 'petrinet-io' after install
-import { showAlert, showRulesDialog } from '../lib/services/DialogService.js';
-import { getDocumentation } from '../lib/providers/DocumentationProvider.js';
+import { showRulesDialog } from '../lib/services/DialogService.js';
+import { showDocumentationDialog } from '../lib/providers/DocumentationProvider.js';
 
 const petrinetio = new PetriNetIO({
   container: '#container'
 });
 
 function loadDocumentation() {
-  let docsText;
-  try {
-    docsText = getDocumentation();
-  } catch (error) {
-    console.error('Failed to load documentation:', error);
-    docsText = `Failed to load documentation: ${error.message}`;
-  }
-  showAlert({
-    title: 'Documentation and Credit',
-    message: docsText,
-    markdown: true
+  showDocumentationDialog().catch((error) => {
+    console.error('Failed to show documentation dialog:', error);
   });
 }
 
