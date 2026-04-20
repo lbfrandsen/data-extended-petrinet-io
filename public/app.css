@@ -124,7 +124,7 @@ body,
     box-shadow 0.2s ease;
 }
 
-.sql-dialog:hover {
+.sql-dialog.is-expanded {
   width: 420px;
   max-height: 340px;
   overflow-y: auto;
@@ -142,7 +142,7 @@ body,
   margin: 0 auto;
 }
 
-.sql-dialog:hover .sql-dialog__title {
+.sql-dialog.is-expanded .sql-dialog__title {
   writing-mode: horizontal-tb;
   transform: none;
   margin: 0;
@@ -152,7 +152,7 @@ body,
   display: block;
 }
 
-.sql-dialog:hover .sql-dialog__header {
+.sql-dialog.is-expanded .sql-dialog__header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -186,32 +186,32 @@ body,
   color: #ffffff;
 }
 
-.sql-dialog:hover .sql-dialog__header--tabs {
+.sql-dialog.is-expanded .sql-dialog__header--tabs {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 10px;
 }
 
-.sql-dialog:hover .sql-dialog__header--tabs .sql-dialog__title--functions {
+.sql-dialog.is-expanded .sql-dialog__header--tabs .sql-dialog__title--functions {
   display: none;
 }
 
-.sql-dialog:hover .sql-dialog__header--tabs .sql-dialog__tabs {
+.sql-dialog.is-expanded .sql-dialog__header--tabs .sql-dialog__tabs {
   display: flex;
   align-items: flex-end;
   gap: 6px;
 }
 
-.sql-dialog:hover .sql-dialog__header--tabs .sql-dialog__tab {
+.sql-dialog.is-expanded .sql-dialog__header--tabs .sql-dialog__tab {
   display: inline-flex;
 }
 
-.sql-dialog:hover .sql-dialog__header--tabs .sql-dialog__tab:hover {
+.sql-dialog.is-expanded .sql-dialog__header--tabs .sql-dialog__tab:hover {
   background: #e9edf4;
 }
 
-.sql-dialog.sql-dialog--no-db:hover .sql-dialog__header {
+.sql-dialog.sql-dialog--no-db.is-expanded .sql-dialog__header {
   display: none;
 }
 
@@ -222,7 +222,7 @@ body,
   white-space: nowrap;
 }
 
-.sql-dialog:hover .sql-dialog__db-label {
+.sql-dialog.is-expanded .sql-dialog__db-label {
   display: block;
 }
 
@@ -580,10 +580,33 @@ body,
 }
 
 .sql-dialog__output-count {
-  margin-top: 6px;
+  margin-top: 0;
   color: #8a8a8a;
   font-size: 11px;
   text-align: left;
+}
+
+.sql-dialog__output-meta {
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.sql-dialog__output-spacer {
+  flex: 1;
+  min-height: 1px;
+}
+
+.sql-dialog__collapse {
+  color: #2f3540;
+  background: #f8f8f8;
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border: solid 1px #cdcdcd;
 }
 
 .sql-dialog__divider,
@@ -593,34 +616,40 @@ body,
 .sql-dialog__output-divider,
 .sql-dialog__output-label,
 .sql-dialog__output,
+.sql-dialog__output-meta,
 .sql-dialog__output-count {
   display: none;
 }
 
-.sql-dialog:hover .sql-dialog__divider {
+.sql-dialog.is-expanded .sql-dialog__divider {
   display: block;
 }
 
-.sql-dialog:hover .sql-dialog__list {
+.sql-dialog.is-expanded .sql-dialog__list {
   display: flex;
 }
 
-.sql-dialog:hover .sql-dialog__actions {
+.sql-dialog.is-expanded .sql-dialog__actions {
   display: flex;
 }
 
-.sql-dialog:hover .sql-dialog__actions-tab {
+.sql-dialog.is-expanded .sql-dialog__actions-tab {
   display: block;
 }
 
-.sql-dialog:hover .sql-dialog__output-divider,
-.sql-dialog:hover .sql-dialog__output-label,
-.sql-dialog:hover .sql-dialog__output,
-.sql-dialog:hover .sql-dialog__output-count {
+.sql-dialog.is-expanded .sql-dialog__output-divider,
+.sql-dialog.is-expanded .sql-dialog__output-label,
+.sql-dialog.is-expanded .sql-dialog__output,
+.sql-dialog.is-expanded .sql-dialog__output-meta,
+.sql-dialog.is-expanded .sql-dialog__output-count {
   display: block;
 }
 
-.sql-dialog:hover .sql-dialog__no-db {
+.sql-dialog.is-expanded .sql-dialog__output-meta {
+  display: flex;
+}
+
+.sql-dialog.is-expanded .sql-dialog__no-db {
   display: flex;
 }
 
