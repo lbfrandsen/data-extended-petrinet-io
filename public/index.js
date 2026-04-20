@@ -43,13 +43,13 @@ document.getElementById('js-download-pnml').addEventListener('click', () => {
 async function promptOpenPnmlAndDb() {
   const choice = await showMultiPrompt({
     title: 'Open PNML + DB',
-    message: 'Choose whether to restore from one combined .dbpmnl file or from two separate files.',
+    message: 'Choose whether to restore from one combined .dbpnml file or from two separate files.',
     fields: [
       {
         key: 'mode',
         label: 'Open mode',
         options: [
-          { value: 'combined', label: 'Single combined .dbpmnl file' },
+          { value: 'combined', label: 'Single combined .dbpnml file' },
           { value: 'separate', label: 'Two separate files (.pnml + .db)' }
         ],
         initialValue: 'combined'
@@ -64,7 +64,7 @@ async function promptOpenPnmlAndDb() {
   if (choice.mode === 'combined') {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.dbpmnl,application/json';
+    input.accept = '.dbpnml,application/json';
     input.onchange = async (event) => {
       const file = event.target.files?.[0];
       if (!file) {
@@ -116,13 +116,13 @@ async function promptOpenPnmlAndDb() {
 async function promptDownloadPnmlAndDb() {
   const choice = await showMultiPrompt({
     title: 'Download PNML + DB',
-    message: 'Choose whether to save one combined .dbpmnl file or two separate files.',
+    message: 'Choose whether to save one combined .dbpnml file or two separate files.',
     fields: [
       {
         key: 'mode',
         label: 'Download mode',
         options: [
-          { value: 'combined', label: 'Single combined .dbpmnl file' },
+          { value: 'combined', label: 'Single combined .dbpnml file' },
           { value: 'separate', label: 'Two separate files (.pnml + .db)' }
         ],
         initialValue: 'combined'
@@ -136,7 +136,7 @@ async function promptDownloadPnmlAndDb() {
 
   try {
     if (choice.mode === 'combined') {
-      petrinetio.exportCombinedDBPNML('petri-net.dbpmnl');
+      petrinetio.exportCombinedDBPNML('petri-net.dbpnml');
       return;
     }
 
@@ -149,8 +149,8 @@ async function promptDownloadPnmlAndDb() {
   }
 }
 
-document.getElementById('js-open-dbpmnl').addEventListener('click', promptOpenPnmlAndDb);
-document.getElementById('js-download-dbpmnl').addEventListener('click', promptDownloadPnmlAndDb);
+document.getElementById('js-open-dbpnml').addEventListener('click', promptOpenPnmlAndDb);
+document.getElementById('js-download-dbpnml').addEventListener('click', promptDownloadPnmlAndDb);
 
 document.getElementById('js-download-tpn').addEventListener('click', () => {
   petrinetio.exportTpn();
