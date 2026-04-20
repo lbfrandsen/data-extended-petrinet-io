@@ -170,7 +170,7 @@ body,
 .sql-dialog__tab {
   border: 1px solid #bfc3ca;
   border-bottom: 0;
-  background: #f2f4f8;
+  background: #f8f2f7;
   color: #2f3540;
   font-size: 12px;
   line-height: 1;
@@ -181,9 +181,9 @@ body,
 }
 
 .sql-dialog__tab.is-active {
-  background: #d9dde5;
+  background: #ff00bf;
   border-color: #9ea4b0;
-  color: #1f232b;
+  color: #ffffff;
 }
 
 .sql-dialog:hover .sql-dialog__header--tabs {
@@ -502,6 +502,22 @@ body,
   border-radius: 4px;
   padding: 4px;
   background: #fff;
+}
+
+.sql-dialog__action-input-group {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+}
+
+.sql-dialog__action-input-group .sql-dialog__query-keyword {
+  min-width: auto;
+}
+
+.sql-dialog__action-input {
+  min-width: 0;
 }
 
 .sql-dialog__remove,
