@@ -491,7 +491,7 @@ body,
 
 .sql-dialog__action-row {
   display: grid;
-  grid-template-columns: 86px 1fr 28px;
+  grid-template-columns: 18px 86px 1fr 28px;
   gap: 6px;
   align-items: center;
 }
