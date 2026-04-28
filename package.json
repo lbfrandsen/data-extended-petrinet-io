@@ -24,8 +24,9 @@
     "build": "webpack --mode production --config webpack.config.js",
     "start": "npm run dev",
     "static": "npm run build",
-    "deploy": "npm run static && gh-pages -d dist",
-    "build:lib": "webpack --mode production --config webpack.lib.config.js"
+    "deploy": "wrangler deploy",
+    "build:lib": "webpack --mode production --config webpack.lib.config.js",
+    "preview": "wrangler dev"
   },
   "dependencies": {
     "diagram-js": "^15.2.4",
@@ -57,6 +58,7 @@
     "style-loader": "^4.0.0",
     "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.1"
+    "webpack-dev-server": "^5.2.1",
+    "wrangler": "^4.85.0"
   }
 }
