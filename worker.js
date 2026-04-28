@@ -1,6 +1,36 @@
 const GITHUB_API_BASE = 'https://api.github.com';
 import { createSign } from 'node:crypto';
 
+function ensureUtf8Charset(response) {
+  const contentType = String(response.headers.get('content-type') || '');
+  const lower = contentType.toLowerCase();
+  const hasCharset = /;\s*charset=/i.test(contentType);
+
+  if (hasCharset) {
+    return response;
+  }
+
+  const shouldForceUtf8 =
+    lower.startsWith('text/')
+    || lower.startsWith('application/javascript')
+    || lower.startsWith('application/json')
+    || lower.startsWith('application/xml')
+    || lower.startsWith('image/svg+xml');
+
+  if (!shouldForceUtf8) {
+    return response;
+  }
+
+  const headers = new Headers(response.headers);
+  headers.set('content-type', `${contentType}; charset=utf-8`);
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
 function createJsonResponse(body, status = 200, origin = '*') {
   return new Response(JSON.stringify(body), {
     status,
@@ -294,7 +324,8 @@ export default {
     }
 
     if (env.ASSETS && typeof env.ASSETS.fetch === 'function') {
-      return env.ASSETS.fetch(request);
+      const assetResponse = await env.ASSETS.fetch(request);
+      return ensureUtf8Charset(assetResponse);
     }
 
     return new Response('Not found', { status: 404 });
