@@ -4,6 +4,8 @@
   "main": "worker.js",
   "compatibility_date": "2026-04-28",
   "vars": {
+    "GITHUB_APP_ID": "3532044",
+    "GITHUB_APP_INSTALLATION_ID": "127811129",
     "GITHUB_REPO_OWNER": "lbfrandsen",
     "GITHUB_REPO_NAME": "data-extended-petrinet-io",
     "GITHUB_ISSUE_LABELS": "bug,auto-report",

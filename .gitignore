@@ -4,6 +4,7 @@ dist/
 INTERNAL-README.md
 .dev.vars
 .env
+.dev.vars.example
 
 # wrangler files
 .wrangler
