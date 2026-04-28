@@ -1,5 +1,5 @@
 import PetriNetIO from '../lib/index'; // or from 'petrinet-io' after install
-import { showAlert, showRulesDialog, showMultiPrompt } from '../lib/services/DialogService.js';
+import { showAlert, showRulesDialog, showMultiPrompt, showBugReportDialog } from '../lib/services/DialogService.js';
 import { showDocumentationDialog } from '../lib/providers/DocumentationProvider.js';
 
 const petrinetio = new PetriNetIO({
@@ -15,6 +15,44 @@ function loadDocumentation() {
 document.getElementById('rules').addEventListener('click', showRulesDialog);
 
 document.getElementById('js-docs').addEventListener('click', loadDocumentation);
+document.getElementById('js-report-bug').addEventListener('click', async () => {
+  const bugReport = await showBugReportDialog();
+
+  if (!bugReport) {
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/report-bug', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: bugReport.title,
+        description: bugReport.description,
+        pageUrl: window.location.href,
+        userAgent: navigator.userAgent
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result?.error || 'Could not submit bug report');
+    }
+
+    await showAlert({
+      title: 'Bug report submitted',
+      message: `Issue #${result.number} created.\n${result.url}`
+    });
+  } catch (error) {
+    await showAlert({
+      title: 'Submission failed',
+      message: error?.message || String(error)
+    });
+  }
+});
 
 document.getElementById('js-open-pnml').addEventListener('click', () => {
   petrinetio.loadFromFile({

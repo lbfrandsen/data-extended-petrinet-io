@@ -1,7 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "data-extended-petrinet-io",
+  "main": "worker.js",
   "compatibility_date": "2026-04-28",
+  "vars": {
+    "GITHUB_REPO_OWNER": "lbfrandsen",
+    "GITHUB_REPO_NAME": "data-extended-petrinet-io",
+    "GITHUB_ISSUE_LABELS": "bug,auto-report",
+    "ALLOWED_ORIGINS": "https://cpndrawer.lucasfrandsen.dk"
+  },
   "observability": {
     "enabled": true
   },
