@@ -1,5 +1,5 @@
 import PetriNetIO from '../lib/index'; // or from 'petrinet-io' after install
-import { showAlert, showRulesDialog, showMultiPrompt, showBugReportDialog } from '../lib/services/DialogService.js';
+import { showAlert, showRulesDialog, showMultiPrompt, showBugReportDialog, showTwoFileUploadDialog } from '../lib/services/DialogService.js';
 import { showDocumentationDialog } from '../lib/providers/DocumentationProvider.js';
 
 const petrinetio = new PetriNetIO({
@@ -113,33 +113,22 @@ async function promptOpenPnmlAndDb() {
     return;
   }
 
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.pnml,.db,.sqlite';
-  input.multiple = true;
-  input.onchange = async (event) => {
-    const files = Array.from(event.target.files || []);
-    const pnmlFile = files.find((file) => file.name.toLowerCase().endsWith('.pnml'));
-    const dbFile = files.find((file) => /\.(db|sqlite)$/i.test(file.name));
+  // Separate files mode - use new dialog
+  const result = await showTwoFileUploadDialog();
+  if (!result) {
+    return;
+  }
 
-    if (!pnmlFile || !dbFile) {
-      await showAlert({
-        title: 'Missing Files',
-        message: 'Please select both one .pnml file and one .db/.sqlite file.'
-      });
-      return;
-    }
+  const { pnmlFile, dbFile } = result;
 
-    try {
-      await petrinetio.importPNMLAndDB({ pnmlFile, dbFile });
-    } catch (error) {
-      await showAlert({
-        title: 'Open Failed',
-        message: error?.message || String(error)
-      });
-    }
-  };
-  input.click();
+  try {
+    await petrinetio.importPNMLAndDB({ pnmlFile, dbFile });
+  } catch (error) {
+    await showAlert({
+      title: 'Open Failed',
+      message: error?.message || String(error)
+    });
+  }
 }
 
 async function promptDownloadPnmlAndDb() {
