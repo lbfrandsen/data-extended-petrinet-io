@@ -211,6 +211,22 @@ body,
   background: #e9edf4;
 }
 
+.sql-dialog__preview-db {
+  border: 1px solid #bfc3ca;
+  background: #f5f5f5;
+  color: #2f3540;
+  font-size: 12px;
+  line-height: 1;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 6px 10px;
+  font-weight: 600;
+}
+
+.sql-dialog__preview-db:hover {
+  background: #e9edf4;
+}
+
 .sql-dialog.sql-dialog--no-db.is-expanded .sql-dialog__header {
   display: none;
 }
