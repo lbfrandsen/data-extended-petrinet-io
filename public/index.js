@@ -1,5 +1,5 @@
 import PetriNetIO from '../lib/index'; // or from 'petrinet-io' after install
-import { showAlert, showRulesDialog, showMultiPrompt, showBugReportDialog, showTwoFileUploadDialog } from '../lib/services/DialogService.js';
+import { showAlert, showRulesDialog, showMultiPrompt, showBugReportDialog, showTwoFileUploadDialog, createOverlay } from '../lib/services/DialogService.js';
 import { showDocumentationDialog } from '../lib/providers/DocumentationProvider.js';
 
 const petrinetio = new PetriNetIO({
@@ -13,7 +13,6 @@ function loadDocumentation() {
 }
 
 document.getElementById('rules').addEventListener('click', showRulesDialog);
-
 document.getElementById('js-docs').addEventListener('click', loadDocumentation);
 document.getElementById('js-report-bug').addEventListener('click', async () => {
   const bugReport = await showBugReportDialog();
@@ -52,6 +51,13 @@ document.getElementById('js-report-bug').addEventListener('click', async () => {
       message: error?.message || String(error)
     });
   }
+});
+
+document.getElementById('js-demo-nets').addEventListener('click', () => {
+  showAlert({
+    title: 'Demo Graphs',
+    message: 'You can find some graphs to get started here: [download link to zip]\n\nIf you need help using the tool, use the Documentation button in the bottom left corner.'
+  });
 });
 
 document.getElementById('js-open-pnml').addEventListener('click', () => {

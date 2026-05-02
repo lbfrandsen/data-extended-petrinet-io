@@ -350,38 +350,18 @@ body,
   text-align: center;
   gap: 10px;
   padding: 18px 16px 16px;
-  border-radius: 14px;
-  border: 1px solid #e6d8c2;
-  background:
-    radial-gradient(120px 90px at 86% 14%, rgba(255, 145, 77, 0.25), transparent 70%),
-    radial-gradient(130px 100px at 12% 88%, rgba(44, 165, 141, 0.22), transparent 72%),
-    linear-gradient(165deg, #fffdf9 0%, #fff6e8 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    0 12px 28px rgba(126, 83, 33, 0.14);
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
 .sql-dialog__no-db-aura {
-  position: absolute;
-  width: 140px;
-  height: 140px;
-  border-radius: 999px;
-  background: radial-gradient(circle, rgba(255, 178, 102, 0.45) 0%, rgba(255, 178, 102, 0.05) 62%, transparent 72%);
-  top: -34px;
-  right: -24px;
-  pointer-events: none;
+  display: none;
 }
 
 .sql-dialog__no-db-ring {
-  position: absolute;
-  width: 90px;
-  height: 90px;
-  border-radius: 999px;
-  border: 1px dashed rgba(56, 108, 94, 0.35);
-  bottom: -26px;
-  left: -18px;
-  pointer-events: none;
-  animation: sql-no-db-spin 16s linear infinite;
+  display: none;
 }
 
 .sql-dialog__no-db-dot {
@@ -401,22 +381,20 @@ body,
   letter-spacing: 1.2px;
   font-size: 10px;
   font-weight: 700;
-  color: #7f5a24;
-  background: rgba(255, 255, 255, 0.75);
+  color: inherit;
+  background: transparent;
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid #efd8ad;
+  border: 1px solid #d0d0d0;
 }
 
 .sql-dialog__no-db-icon {
   position: relative;
   z-index: 1;
   font-size: 62px;
-  background: linear-gradient(145deg, #d76d2f 8%, #f3a342 48%, #2ca58d 94%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 6px 18px rgba(132, 85, 35, 0.22);
+  background: none;
+  color: inherit;
+  text-shadow: none;
 }
 
 .sql-dialog__no-db-text {
@@ -424,7 +402,7 @@ body,
   z-index: 1;
   font-size: 16px;
   line-height: 1.2;
-  color: #1f232b;
+  color: inherit;
   font-weight: 800;
 }
 
@@ -440,8 +418,8 @@ body,
 .sql-dialog__upload-db {
   position: relative;
   z-index: 1;
-  color: #fff;
-  background: linear-gradient(135deg, #d76d2f 0%, #f19c3f 52%, #2ca58d 100%);
+  color: inherit;
+  background: transparent;
   border-radius: 999px;
   width: 100%;
   max-width: 150px;
@@ -450,19 +428,15 @@ body,
   letter-spacing: 0.8px;
   font-weight: 800;
   text-align: center;
-  border: 1px solid rgba(64, 44, 21, 0.2);
-  box-shadow:
-    0 8px 16px rgba(163, 90, 44, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border: 1px solid #b0b0b0;
+  box-shadow: none;
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
 .sql-dialog__upload-db:hover {
-  transform: translateY(-1px);
-  filter: saturate(1.08);
-  box-shadow:
-    0 10px 18px rgba(163, 90, 44, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transform: none;
+  filter: none;
+  box-shadow: none;
 }
 
 .sql-dialog__actions-tab {
