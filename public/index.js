@@ -6,6 +6,8 @@ const petrinetio = new PetriNetIO({
   container: '#container'
 });
 
+window.petrinetio = petrinetio;
+
 function loadDocumentation() {
   showDocumentationDialog().catch((error) => {
     console.error('Failed to show documentation dialog:', error);

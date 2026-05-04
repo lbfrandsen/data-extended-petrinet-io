@@ -222,3 +222,33 @@ a:hover {
   background: #ebebeb;
   border-color: #bdb0b4;
 }
+
+.simulation-roadmap__actions {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.simulation-roadmap__archive-btn {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid #d4c9cc;
+  background: #f4f4f4;
+  color: #2f2f2f;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.simulation-roadmap__archive-btn:hover {
+  background: #ebebeb;
+  border-color: #bdb0b4;
+}
