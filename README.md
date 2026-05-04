@@ -65,7 +65,7 @@ The database extension adds query-aware and action-aware transition behavior on 
 - One transition can have multiple bound actions.
 - When a transition fires, bound actions execute before token state updates.
 - If any action fails, firing is aborted and token movement does not proceed.
-- Actions are intentionally powerful: they can irreversibly modify the loaded database.
+- Actions are intentionally powerful: they can irreversibly modify the loaded database. However, changes are only applied to the .db file on disk when the user actively exports either the .db or .dbpnml file.
 
 #### Persistence and import/export behavior
 - Query/action entries and transition bindings are included in PNML metadata.
