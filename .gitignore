@@ -5,6 +5,7 @@ INTERNAL-README.md
 .dev.vars
 .env
 .dev.vars.example
+validation-scripts
 
 # wrangler files
 .wrangler
