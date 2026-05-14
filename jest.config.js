@@ -5,5 +5,6 @@ export default {
     },
     moduleFileExtensions: ['js', 'json'],
     testMatch: ['**/?(*.)+(spec|test).[jt]s'],
+    setupFiles: ['<rootDir>/tests/jest.setup.js'],
     collectCoverage: false
 };
