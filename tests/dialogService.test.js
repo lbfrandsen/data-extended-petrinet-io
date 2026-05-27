@@ -8,7 +8,7 @@ describe('DialogService', () => {
     test('DEFAULT_RULES has expected default values', () => {
         expect(DEFAULT_RULES.integerGeneration).toBe('randomDomain');
         expect(DEFAULT_RULES.consumptionMode).toBe('random');
-        expect(DEFAULT_RULES.productionMode).toBe('user');
+        expect(DEFAULT_RULES.productionMode).toBe('random');
         expect(DEFAULT_RULES.stringRegex).toBe('[a-zA-Z]{1,20}');
     });
 

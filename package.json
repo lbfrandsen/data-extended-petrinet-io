@@ -27,7 +27,7 @@
     "deploy": "wrangler deploy",
     "build:lib": "webpack --mode production --config webpack.lib.config.js",
     "preview": "wrangler dev",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:watch": "jest --watch"
   },
   "dependencies": {

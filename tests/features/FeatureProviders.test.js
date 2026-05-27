@@ -45,7 +45,7 @@ describe('Features and arc providers', () => {
             const element = { type: 'petri:transition', businessObject: {} };
             provider.update(element, 'MyTransition', '', null);
             expect(element.businessObject.name).toBe('MyTransition');
-            expect(eventBus.fire).toHaveBeenCalledWith({ element });
+            expect(eventBus.fire).toHaveBeenCalledWith('element.changed', { element });
         });
 
         test('update on connection parses inscription and fires event', () => {
@@ -65,7 +65,7 @@ describe('Features and arc providers', () => {
             await provider.addTokenPopup(place);
             expect(place.businessObject.marking).toEqual([[]]);
             expect(place.businessObject.tokens).toBe(1);
-            expect(eventBus.fire).toHaveBeenCalledWith({ element: place });
+            expect(eventBus.fire).toHaveBeenCalledWith('element.changed', { element: place });
         });
     });
 
@@ -150,7 +150,7 @@ describe('Features and arc providers', () => {
             const element = { id: 'P1', businessObject: {} };
             await provider.setLabel(element);
             expect(element.businessObject.name).toBe('Updated');
-            expect(eventBus.fire).toHaveBeenCalledWith({ element });
+            expect(eventBus.fire).toHaveBeenCalledWith('element.changed', { element });
         });
     });
 
@@ -183,7 +183,7 @@ describe('Features and arc providers', () => {
             const connection = { businessObject: {} };
             initializeArcInscription(connection, eventBus);
             expect(connection.businessObject.arcInscription).toBe('<x>');
-            expect(eventBus.fire).toHaveBeenCalledWith({ element: connection });
+            expect(eventBus.fire).toHaveBeenCalledWith('element.changed', { element: connection });
         });
 
         test('registerArcInscriptionSync binds events for connection changes', () => {
