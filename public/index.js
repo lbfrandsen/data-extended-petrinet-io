@@ -80,7 +80,8 @@ document.getElementById('js-download-pnml').addEventListener('click', () => {
 async function promptOpenPnmlAndDb() {
   const choice = await showMultiPrompt({
     title: 'Open PNML + DB',
-    message: 'Choose whether to restore from one combined .dbpnml file or from two separate files.',
+    message: 'Choose whether to open one combined .dbpnml file or from two separate files.',
+    submitLabel: 'Open',
     fields: [
       {
         key: 'mode',
