@@ -58,7 +58,7 @@ document.getElementById('js-report-bug').addEventListener('click', async () => {
 document.getElementById('js-demo-nets').addEventListener('click', () => {
   showAlert({
     title: 'Demo Graphs',
-    message: 'You can find some graphs to get started here: [download link to zip]\n\nIf you need help using the tool, use the Documentation button in the bottom left corner.'
+    message: 'You can find some graphs to get started here: https://drive.google.com/drive/folders/1UxDIrCZoKsmTPYRscQlN1PeOt96CPulP?usp=sharing\n\nIf you need help using the tool, use the Documentation button in the bottom left corner.'
   });
 });
 
