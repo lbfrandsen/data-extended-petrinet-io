@@ -58,13 +58,17 @@ document.getElementById('js-report-bug').addEventListener('click', async () => {
 document.getElementById('js-demo-nets').addEventListener('click', () => {
   showAlert({
     title: 'Demo Graphs',
-    message: 'You can find some graphs to get started here: https://drive.google.com/drive/folders/1UxDIrCZoKsmTPYRscQlN1PeOt96CPulP?usp=sharing\n\nIf you need help using the tool, use the Documentation button in the bottom left corner.'
+    contentHtml: 'You can find ready-made example models here:<br><br>'
+      + '<a href="https://drive.google.com/drive/folders/1UxDIrCZoKsmTPYRscQlN1PeOt96CPulP?usp=sharing" '
+      + 'target="_blank" rel="noopener noreferrer" style="color:#1976d2;font-weight:bold;">'
+      + 'Demo Graphs on Google Drive</a>'
+      + '<br><br>If you need help using the tool, click the <strong>Documentation</strong> button in the bottom left corner.'
   });
 });
 
 document.getElementById('js-open-pnml').addEventListener('click', () => {
   petrinetio.loadFromFile({
-    importNetMetadata: false,
+    importNetMetadata: true,
     importQueryBindings: false,
     resetExternalState: true
   });
@@ -72,7 +76,7 @@ document.getElementById('js-open-pnml').addEventListener('click', () => {
 
 document.getElementById('js-download-pnml').addEventListener('click', () => {
   petrinetio.exportPNML('petri-net.pnml', {
-    includeNetMetadata: false,
+    includeNetMetadata: true,
     includeQueryBindings: false
   });
 });
