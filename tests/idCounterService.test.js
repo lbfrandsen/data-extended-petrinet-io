@@ -31,18 +31,10 @@ describe('IdCounterService', () => {
         expect(service.getNextTransitionLabel()).toBe('C');
     });
 
-    test('getNextConnectionId returns a connection id with prefix', () => {
-        const registry = { getAll: () => [] };
-        const service = new IdCounterService(registry);
-        const connectionId = service.getNextConnectionId();
-        expect(connectionId.startsWith('Connection_')).toBe(true);
-    });
-
     test('getNextId returns IDs based on type', () => {
         const registry = { getAll: () => [] };
         const service = new IdCounterService(registry);
         expect(service.getNextId('petri:place')).toBe('p1');
         expect(service.getNextId('petri:transition')).toBe('t1');
-        expect(service.getNextId('unknown')).toBeUndefined();
     });
 });

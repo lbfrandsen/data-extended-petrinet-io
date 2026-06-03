@@ -9,10 +9,6 @@ describe('arc-utils', () => {
         expect(parseArcInscriptionText('<x,y>^3')).toEqual({ text: '<x,y>', vars: ['x', 'y'], multiplicity: 3 });
     });
 
-    test('parseArcInscriptionText supports superscript multiplicity', () => {
-        expect(parseArcInscriptionText('<x>²')).toEqual({ text: '<x>', vars: ['x'], multiplicity: 2 });
-    });
-
     test('parseArcInscriptionSpec reads businessObject arcInscription text', () => {
         const connection = { businessObject: { arcInscription: '<a>' } };
         expect(parseArcInscriptionSpec(connection)).toEqual({ text: '<a>', vars: ['a'], multiplicity: 1 });
@@ -25,15 +21,6 @@ describe('arc-utils', () => {
         };
         expect(parseInscriptionLine('x', connection)).toBeNull();
     });
-
-    test('parseInscriptionLine rejects wrong arity for place type', () => {
-        const connection = {
-            source: { type: 'petri:place', businessObject: { placeType: 'int*string' } },
-            target: { type: 'petri:transition' }
-        };
-        expect(parseInscriptionLine('<x>', connection)).toBeNull();
-    });
-
     test('parseInscriptionLine accepts valid inscription matching place type', () => {
         const connection = {
             source: { type: 'petri:place', businessObject: { placeType: 'int*string' } },

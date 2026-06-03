@@ -23,12 +23,20 @@ describe('getters', () => {
     });
 
     test('getSiblingConnections returns unique incoming and outgoing connections', () => {
-        const conn1 = { id: 1 };
-        const conn2 = { id: 2 };
-        const transition = { type: 'petri:transition', incoming: [conn1], outgoing: [conn2] };
-        const source = { type: 'petri:place' };
-        const target = transition;
-        const siblings = getters.getSiblingConnections({ source, target });
+        const place = { type: 'petri:place' };
+        const transition = { type: 'petri:transition' };
+
+        const conn1 = { id: 1, source: place, target: transition };
+        const conn2 = { id: 2, source: transition, target: place };
+
+        transition.incoming = [conn1, conn1]; // duplicate on purpose
+        transition.outgoing = [conn2];
+
+        const siblings = getters.getSiblingConnections({
+            source: place,
+            target: transition
+        });
+
         expect(siblings).toEqual([conn1, conn2]);
     });
 
@@ -37,6 +45,15 @@ describe('getters', () => {
         const marking = getters.getPlaceMarking(place);
         expect(marking).toEqual([]);
         expect(place.businessObject.marking).toEqual([]);
+    });
+
+    test('getPlaceMarking returns existing marking when it is already set', () => {
+        const place = { businessObject: { marking: [1, 2] } };
+
+        const marking = getters.getPlaceMarking(place);
+
+        expect(marking).toEqual([1, 2]);
+        expect(place.businessObject.marking).toEqual([1, 2]);
     });
 
     test('getPlaceType reads type from businessObject', () => {
