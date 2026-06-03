@@ -120,7 +120,5 @@ The database extension adds query-aware and action-aware transition behavior on 
 - Copy/paste is shape-oriented and keeps core shape properties/business object data.
 - Pasted elements receive fresh IDs to avoid ID collisions.
 
-(doc is WIP: markdown formatting and content will be refined in the final version)
-
 ### Demo graphs
-- https://drive.google.com/drive/folders/1UxDIrCZoKsmTPYRscQlN1PeOt96CPulP?usp=drive_link
+- [Demo Graphs on Google Drive](https://drive.google.com/drive/folders/1UxDIrCZoKsmTPYRscQlN1PeOt96CPulP?usp=drive_link)
