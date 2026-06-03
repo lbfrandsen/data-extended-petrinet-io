@@ -58,7 +58,7 @@ describe('Providers', () => {
 
         beforeEach(() => {
             palette = { registerProvider: jest.fn() };
-            eventBus = { fire: jest.fn() };
+            eventBus = { fire: jest.fn(), on: jest.fn() };
             simulationService = { isSimulationActive: jest.fn(() => false), toggleSimulation: jest.fn(() => true), stepBack: jest.fn(), masterResetTokensToInitial: jest.fn(), resetTokensToInitial: jest.fn(), stopSimulation: jest.fn() };
             idCounterService = { toggleLabels: jest.fn(), getNextPlaceId: jest.fn(() => 'p1'), getNextTransitionId: jest.fn(() => 't1') };
             elementRegistry = { getAll: jest.fn(() => [{ id: 'p1' }]) };
