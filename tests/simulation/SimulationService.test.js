@@ -5,6 +5,15 @@ describe('SimulationService', () => {
     let service;
     const registry = { getAll: jest.fn(() => []) };
 
+    const makePlace = (marking = [1]) => ({
+        id: 'p1',
+        type: 'petri:place',
+        businessObject: {
+            marking: [...marking],
+            tokens: marking.length
+        }
+    });
+
     beforeEach(() => {
         eventBus = { on: jest.fn(), fire: jest.fn() };
         service = new SimulationService(eventBus, registry, {}, {}, {}, {}, {});
@@ -84,5 +93,87 @@ describe('SimulationService', () => {
         clickHandler({ element: { type: 'petri:transition' } });
 
         expect(testService.fireTransition).not.toHaveBeenCalled();
+    });
+
+    test('archiveCurrentSession stores a session record and keeps it readable through the archive API', () => {
+        const place = makePlace([5]);
+        const testService = new SimulationService(eventBus, { getAll: jest.fn(() => [place]) }, {}, {}, {}, {}, {});
+
+        testService.initialTokenState.set('p1', [5]);
+        testService.executionLog = ['step-1'];
+        testService.stepHistory = [
+            { markings: new Map([['p1', [5]]]), firedTransitions: ['t1'] },
+            { markings: new Map([['p1', [8]]]), firedTransitions: [] }
+        ];
+        testService.currentStepIndex = 1;
+
+        const archived = testService.archiveCurrentSession('test-run');
+
+        expect(archived).toBe(true);
+        expect(testService.sessionArchive).toHaveLength(1);
+        expect(testService.sessionArchive[0].endedBy).toBe('test-run');
+        expect(testService.getSessionArchive()).toHaveLength(1);
+
+        const archiveCopy = testService.getSessionArchive()[0];
+        archiveCopy.initialTokenState[0][1].push(99);
+
+        expect(testService.sessionArchive[0].initialTokenState[0][1]).toEqual([5]);
+    });
+
+    test('createSimulationSnapshot and restoreSimulationSnapshot round-trip token markings', () => {
+        const place = makePlace([3]);
+        const testService = new SimulationService(eventBus, { getAll: jest.fn(() => [place]) }, {}, {}, {}, {}, {});
+
+        testService.firedTransitions = new Set(['t1']);
+        const snapshot = testService.createSimulationSnapshot();
+
+        place.businessObject.marking = [9];
+        testService.firedTransitions = new Set();
+
+        testService.restoreSimulationSnapshot(snapshot);
+
+        expect(place.businessObject.marking).toEqual([3]);
+        expect(Array.from(testService.firedTransitions)).toEqual(['t1']);
+    });
+
+    test('stepBack restores the previous snapshot and updates the current step index', () => {
+        const place = makePlace([2]);
+        const testService = new SimulationService(eventBus, { getAll: jest.fn(() => [place]) }, {}, {}, {}, {}, {});
+        const updateSpy = jest.spyOn(testService, 'updateEnabledTransitions').mockImplementation(() => { });
+
+        testService.isActive = true;
+        testService.currentStepIndex = 1;
+        testService.stepHistory = [
+            { markings: new Map([['p1', [2]]]), firedTransitions: [] },
+            { markings: new Map([['p1', [4]]]), firedTransitions: ['t1'] }
+        ];
+
+        const result = testService.stepBack();
+
+        expect(result).toBe(true);
+        expect(testService.currentStepIndex).toBe(0);
+        expect(place.businessObject.marking).toEqual([2]);
+        expect(updateSpy).toHaveBeenCalled();
+    });
+
+    test('jumpToStep only accepts valid step positions and restores the requested snapshot', () => {
+        const place = makePlace([1]);
+        const testService = new SimulationService(eventBus, { getAll: jest.fn(() => [place]) }, {}, {}, {}, {}, {});
+        jest.spyOn(testService, 'updateEnabledTransitions').mockImplementation(() => { });
+
+        testService.isActive = true;
+        testService.currentStepIndex = 2;
+        testService.executionLog = ['a', 'b'];
+        testService.stepHistory = [
+            { markings: new Map([['p1', [1]]]), firedTransitions: [] },
+            { markings: new Map([['p1', [2]]]), firedTransitions: ['t1'] },
+            { markings: new Map([['p1', [3]]]), firedTransitions: ['t1', 't2'] }
+        ];
+
+        expect(testService.jumpToStep(-1)).toBe(false);
+        expect(testService.jumpToStep(99)).toBe(false);
+        expect(testService.jumpToStep(1)).toBe(true);
+        expect(testService.currentStepIndex).toBe(1);
+        expect(place.businessObject.marking).toEqual([2]);
     });
 });
