@@ -484,6 +484,8 @@ body,
   grid-template-columns: 18px 86px 1fr 28px;
   gap: 6px;
   align-items: center;
+  position: relative;
+  min-height: 28px;
 }
 
 .sql-dialog__action-type {
@@ -508,6 +510,22 @@ body,
 
 .sql-dialog__action-input {
   min-width: 0;
+}
+
+.sql-dialog__action-row.is-editing-action-input {
+  z-index: 2;
+}
+
+.sql-dialog__action-input.is-expanded {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  z-index: 3;
+  width: 100%;
+  box-sizing: border-box;
+  transform: translateY(-50%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
 }
 
 .sql-dialog__remove,
