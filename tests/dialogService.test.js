@@ -76,7 +76,7 @@ describe('DialogService rules and mode helpers', () => {
         numberInputs[1].value = '25';
         numberInputs[1].dispatchEvent(new Event('change', { bubbles: true }));
 
-        const stringInput = document.querySelector('input[type="text"]');
+        const stringInput = document.querySelector('input[placeholder="Type regex here"]');
         stringInput.value = '[A-Z]{2}';
         stringInput.dispatchEvent(new Event('change', { bubbles: true }));
 
@@ -91,6 +91,21 @@ describe('DialogService rules and mode helpers', () => {
         }));
         expect(onClose).toHaveBeenCalledWith(rules);
         expect(document.body.children).toHaveLength(0);
+    });
+
+    test('showRulesDialog displays default real domain bounds with decimal notation', () => {
+        // JavaScript stores 0.0 as the number 0, so the UI must format real defaults explicitly.
+        showRulesDialog({});
+
+        const realMinInput = document.querySelector('[data-rule-field="realDomainMin"]');
+        const realMaxInput = document.querySelector('[data-rule-field="realDomainMax"]');
+
+        expect(realMinInput.value).toBe('0.0');
+        expect(realMaxInput.value).toBe('100.0');
+        expect(realMinInput.type).toBe('text');
+        expect(realMaxInput.type).toBe('text');
+        expect(realMinInput.inputMode).toBe('decimal');
+        expect(realMaxInput.inputMode).toBe('decimal');
     });
 });
 
