@@ -45,7 +45,7 @@ document.getElementById('js-report-bug').addEventListener('click', async () => {
 
     await showAlert({
       title: 'Bug report submitted',
-      message: `Issue #${result.number} created.\nThank you for your help!♥️`
+      message: `Issue created.\nThank you for your help!♥️`
     });
   } catch (error) {
     await showAlert({
