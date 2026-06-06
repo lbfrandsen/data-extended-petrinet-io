@@ -1,0 +1,8 @@
+AI Declaration for our inits tests
+
+__________________________________
+
+
+The internal unit tests built upon the Jest library have been written using LLM's extensively.
+
+All code has been checked and verified manually by the authors, and we retain full responsibility for the code.

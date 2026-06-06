@@ -25,6 +25,8 @@ describe('SimulationService', () => {
     });
 
     test('toggleSimulation activates simulation, initializes state, and fires event', () => {
+        // Starting simulation should initialize both the master token state and the current session state.
+        // The mode-change event is what lets the UI update its simulation controls.
         expect(service.isActive).toBe(false);
         const result = service.toggleSimulation();
         expect(result).toBe(true);
@@ -34,6 +36,8 @@ describe('SimulationService', () => {
     });
 
     test('toggleSimulation deactivates simulation and archives session when already active', () => {
+        // Turning simulation off is also the lifecycle boundary for preserving the run history.
+        // This verifies that deactivation routes through the archive path instead of just flipping a flag.
         service.isActive = true;
         service.archiveCurrentSession = jest.fn();
         const result = service.toggleSimulation();
@@ -42,6 +46,8 @@ describe('SimulationService', () => {
     });
 
     test('toggleSimulation initializes stepHistory and currentStepIndex when activated', () => {
+        // A new run starts with a snapshot at step 0 and no fired transitions yet.
+        // This gives step-back and timeline controls a stable baseline immediately after activation.
         service.isActive = false;
         service.ensureMasterInitialTokenState = jest.fn();
         service.saveInitialTokenState = jest.fn();
@@ -59,6 +65,8 @@ describe('SimulationService', () => {
     const makeRegistry = () => ({ getAll: jest.fn(() => []) });
 
     test('constructor registers eventBus listeners for element click and state changes', () => {
+        // SimulationService wires itself into diagram-js through eventBus listeners.
+        // These registrations are the only way model edits and transition clicks reach the service.
         const eventBus = { on: jest.fn(), fire: jest.fn() };
         const testService = new SimulationService(eventBus, makeRegistry(), {}, {}, {}, {}, {});
 
@@ -69,7 +77,26 @@ describe('SimulationService', () => {
         expect(eventBus.on).toHaveBeenCalledWith('element.click', expect.any(Function));
     });
 
+    test('model change handler refreshes enabled transitions only while active', () => {
+        // Enabled-state recomputation is only meaningful while simulation mode is active.
+        // This protects normal editing from unnecessary simulation work, while still updating active runs.
+        const eventBus = { on: jest.fn(), fire: jest.fn() };
+        const testService = new SimulationService(eventBus, makeRegistry(), {}, {}, {}, {}, {});
+        const changedHandler = eventBus.on.mock.calls.find((call) => Array.isArray(call[0]) && call[0].includes('elements.changed'))[1];
+
+        testService.updateEnabledTransitions = jest.fn();
+        testService.isActive = false;
+        changedHandler();
+        expect(testService.updateEnabledTransitions).not.toHaveBeenCalled();
+
+        testService.isActive = true;
+        changedHandler();
+        expect(testService.updateEnabledTransitions).toHaveBeenCalledTimes(1);
+    });
+
     test('element.click handler fires transition when transition is enabled', () => {
+        // In simulation mode, clicking an enabled transition is the main user path for firing it.
+        // The handler should delegate to fireTransition only after the enabled check passes.
         const eventBus = { on: jest.fn(), fire: jest.fn() };
         const testService = new SimulationService(eventBus, makeRegistry(), {}, {}, {}, {}, {});
         const clickHandler = eventBus.on.mock.calls.find((call) => call[0] === 'element.click')[1];
@@ -83,6 +110,8 @@ describe('SimulationService', () => {
     });
 
     test('element.click handler does not fire transition when transition is disabled', () => {
+        // Disabled transitions can still be clicked in the diagram.
+        // The click handler must not fire them unless the service currently considers them enabled.
         const eventBus = { on: jest.fn(), fire: jest.fn() };
         const testService = new SimulationService(eventBus, makeRegistry(), {}, {}, {}, {}, {});
         const clickHandler = eventBus.on.mock.calls.find((call) => call[0] === 'element.click')[1];
@@ -95,7 +124,25 @@ describe('SimulationService', () => {
         expect(testService.fireTransition).not.toHaveBeenCalled();
     });
 
+    test('element.click handler ignores non-transition elements', () => {
+        // Places and other diagram elements share the same click event channel.
+        // The simulation click behavior should only apply to Petri net transitions.
+        const eventBus = { on: jest.fn(), fire: jest.fn() };
+        const testService = new SimulationService(eventBus, makeRegistry(), {}, {}, {}, {}, {});
+        const clickHandler = eventBus.on.mock.calls.find((call) => call[0] === 'element.click')[1];
+
+        testService.isTransitionEnabled = jest.fn();
+        testService.fireTransition = jest.fn();
+
+        clickHandler({ element: { type: 'petri:place' } });
+
+        expect(testService.isTransitionEnabled).not.toHaveBeenCalled();
+        expect(testService.fireTransition).not.toHaveBeenCalled();
+    });
+
     test('archiveCurrentSession stores a session record and keeps it readable through the archive API', () => {
+        // Archiving captures the initial state, timeline, execution log, and ending reason for later inspection.
+        // The copy returned by the archive API must be defensive so callers cannot mutate stored history.
         const place = makePlace([5]);
         const testService = new SimulationService(eventBus, { getAll: jest.fn(() => [place]) }, {}, {}, {}, {}, {});
 
@@ -121,6 +168,8 @@ describe('SimulationService', () => {
     });
 
     test('createSimulationSnapshot and restoreSimulationSnapshot round-trip token markings', () => {
+        // Snapshots are the mechanism behind undo/step navigation in simulation mode.
+        // Restoring a snapshot should reset both place markings and the set of fired transitions.
         const place = makePlace([3]);
         const testService = new SimulationService(eventBus, { getAll: jest.fn(() => [place]) }, {}, {}, {}, {}, {});
 
@@ -137,6 +186,8 @@ describe('SimulationService', () => {
     });
 
     test('stepBack restores the previous snapshot and updates the current step index', () => {
+        // Stepping back should move exactly one position in the timeline and restore that saved marking state.
+        // The enabled transition cache must also be refreshed after the restored state is applied.
         const place = makePlace([2]);
         const testService = new SimulationService(eventBus, { getAll: jest.fn(() => [place]) }, {}, {}, {}, {}, {});
         const updateSpy = jest.spyOn(testService, 'updateEnabledTransitions').mockImplementation(() => { });
@@ -157,6 +208,8 @@ describe('SimulationService', () => {
     });
 
     test('jumpToStep only accepts valid step positions and restores the requested snapshot', () => {
+        // Timeline jumps should reject out-of-range indices without changing state.
+        // A valid index should restore the matching snapshot and update the current pointer.
         const place = makePlace([1]);
         const testService = new SimulationService(eventBus, { getAll: jest.fn(() => [place]) }, {}, {}, {}, {}, {});
         jest.spyOn(testService, 'updateEnabledTransitions').mockImplementation(() => { });
