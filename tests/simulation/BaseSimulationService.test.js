@@ -788,6 +788,72 @@ describe('BaseSimulationService lifecycle and reset behavior', () => {
         expect(service.masterInitialTokenState.get('p1')).toEqual([1]);
     });
 
+    test('hasMasterBaselineChanges reports when the current marking differs from the master baseline', () => {
+        // The reset dialog uses this to hide the destructive baseline action when it would do nothing.
+        const place = makePlace({ id: 'p1', placeType: 'int', marking: [1] });
+        const { service } = makeService([place]);
+
+        expect(service.hasMasterBaselineChanges()).toBe(false);
+
+        service.saveMasterInitialTokenState();
+        expect(service.hasMasterBaselineChanges()).toBe(false);
+
+        place.businessObject.marking = [2];
+        expect(service.hasMasterBaselineChanges()).toBe(true);
+    });
+
+    test('hasMasterBaselineChanges reports when the current database snapshot differs from the master baseline', () => {
+        // Master reset also restores database state, so DB-only changes should expose the rebase action.
+        const place = makePlace({ id: 'p1', placeType: 'int', marking: [1] });
+        let dbBytes = new Uint8Array([1]);
+        const databaseService = {
+            snapshotDatabaseBytes: jest.fn(() => dbBytes),
+            getDbName: jest.fn(() => 'model.db')
+        };
+        const { service } = makeService([place], { databaseService });
+
+        service.saveMasterInitialTokenState();
+        expect(service.hasMasterBaselineChanges()).toBe(false);
+
+        dbBytes = new Uint8Array([2]);
+        expect(service.hasMasterBaselineChanges()).toBe(true);
+    });
+
+    test('setMasterBaselineToCurrentState refreshes only the master baseline without resetting markings', () => {
+        // Refreshing the master baseline is an explicit irreversible action, not a reset.
+        // It should preserve the current marking and leave the active run state untouched.
+        const place = makePlace({ id: 'p1', placeType: 'int*string', marking: [[1, 'a']] });
+        const databaseService = {
+            snapshotDatabaseBytes: jest.fn(() => new Uint8Array([7, 8, 9])),
+            getDbName: jest.fn(() => 'rebased.db')
+        };
+        const { service } = makeService([place], { databaseService });
+
+        service.masterInitialTokenState.set('p1', [[0, 'old']]);
+        service.initialTokenState.set('p1', [[0, 'old']]);
+        service.firedTransitions.add('t1');
+        service.executionLog = ['t1'];
+        service.stepHistory = [
+            { markings: new Map([['p1', [[0, 'old']]]]), firedTransitions: [] },
+            { markings: new Map([['p1', [[1, 'a']]]]), firedTransitions: ['t1'] }
+        ];
+        service.currentStepIndex = 1;
+        service.isActive = true;
+
+        service.setMasterBaselineToCurrentState();
+        expect(service.hasMasterBaselineChanges()).toBe(false);
+        place.businessObject.marking[0][0] = 99;
+
+        expect(service.masterInitialTokenState.get('p1')).toEqual([[1, 'a']]);
+        expect(service.initialTokenState.get('p1')).toEqual([[0, 'old']]);
+        expect(service.masterInitialDbSnapshot).toEqual(new Uint8Array([7, 8, 9]));
+        expect(service.masterInitialDbName).toBe('rebased.db');
+        expect(service.isTransitionFired({ id: 't1' })).toBe(true);
+        expect(service.getExecutionLog()).toEqual(['t1']);
+        expect(service.getCurrentStepIndex()).toBe(1);
+        expect(service.stepHistory).toHaveLength(2);
+    });
+
     test('resetTokensToInitial restores captured markings and database snapshot', () => {
         // This covers the non-timeline reset path used when simulation is inactive.
         // Unknown places are not destructively cleared; captured places are restored.
@@ -854,6 +920,30 @@ describe('BaseSimulationService lifecycle and reset behavior', () => {
         expect(place.businessObject.marking).toEqual([2]);
         expect(service.isTransitionFired({ id: 't1' })).toBe(false);
         expect(service.getExecutionLog()).toEqual([]);
+    });
+
+    test('removeTransitionRuntimeState clears fired visuals and timeline references for a deleted transition', () => {
+        // Deleted transitions should not leave ID-keyed runtime state that can affect a future transition.
+        const { service } = makeService([]);
+        service.enabledTransitions.add('t1');
+        service.firedTransitions.add('t1');
+        service.queryGuardDiagnostics.set('t1', { status: 'error' });
+        service.executionLog = ['t1', 't2'];
+        service.currentStepIndex = 2;
+        service.stepHistory = [
+            { markings: new Map(), firedTransitions: [] },
+            { markings: new Map(), firedTransitions: ['t1'] },
+            { markings: new Map(), firedTransitions: ['t1', 't2'] }
+        ];
+
+        const removed = service.removeTransitionRuntimeState('t1');
+
+        expect(removed).toBe(true);
+        expect(service.isTransitionEnabled({ id: 't1' })).toBe(false);
+        expect(service.isTransitionFired({ id: 't1' })).toBe(false);
+        expect(service.getExecutionLog()).toEqual(['t2']);
+        expect(service.getCurrentStepIndex()).toBe(1);
+        expect(service.stepHistory.map(snapshot => snapshot.firedTransitions)).toEqual([[], [], ['t2']]);
     });
 
     test('resetRuntimeState clears simulation internals and emits inactive mode', () => {

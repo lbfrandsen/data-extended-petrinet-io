@@ -4,6 +4,7 @@ import {
     getProductionMode,
     rules,
     showAlert,
+    showConfirmDialog,
     showMultiPrompt,
     showPrompt,
     showQueryRowAndConsumptionDialog,
@@ -135,8 +136,19 @@ describe('DialogService simple dialog promises', () => {
         await expect(promise).resolves.toBeUndefined();
     });
 
-    test('showResetModeDialog resolves master, soft, or null depending on the selected close path', async () => {
-        // Reset mode is a semantic dialog: callers branch on master, soft, or null.
+    test('showConfirmDialog resolves true or false from the selected close path', async () => {
+        // Confirm dialogs are used for irreversible actions, so callers need a boolean.
+        let promise = showConfirmDialog({ title: 'Confirm', message: 'Continue?' });
+        clickButton('Yes');
+        await expect(promise).resolves.toBe(true);
+
+        promise = showConfirmDialog({ title: 'Confirm', message: 'Continue?' });
+        clickButton('No');
+        await expect(promise).resolves.toBe(false);
+    });
+
+    test('showResetModeDialog resolves master, soft, set-baseline, or null depending on the selected close path', async () => {
+        // Reset mode is a semantic dialog: callers branch on master, soft, baseline updates, or null.
         // Covering each return value is more useful than checking how the buttons are styled.
         let promise = showResetModeDialog();
         clickButton('Master Reset');
@@ -145,6 +157,15 @@ describe('DialogService simple dialog promises', () => {
         promise = showResetModeDialog();
         clickButton('Soft Reset');
         await expect(promise).resolves.toBe('soft');
+
+        promise = showResetModeDialog({ canSetMasterBaseline: true });
+        clickButton('Set New Master Baseline');
+        await expect(promise).resolves.toBe('set-master-baseline');
+
+        promise = showResetModeDialog();
+        expect(document.body.textContent).not.toContain('Set New Master Baseline');
+        clickButton('Cancel');
+        await expect(promise).resolves.toBeNull();
 
         promise = showResetModeDialog();
         clickButton('Cancel');

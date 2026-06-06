@@ -90,8 +90,11 @@ The database extension adds query-aware and action-aware transition behavior on 
 ### Step-back and reset behavior
 - Every successful firing stores a snapshot in simulation history.
 - Step-back restores the previous snapshot (tokens + fired-transition state).
-- Reset returns all places to the token marking saved at the start of the active simulation run.
-- Reset also clears simulation history/fired markers and exits simulation mode.
+- Reset opens a dialog for Soft Reset or Master Reset.
+- Soft Reset restores all places to the token marking saved at the start of the active simulation run.
+- Master Reset restores all places to the saved master baseline.
+- If the current marking differs from the master baseline, the reset dialog can set the current marking and database snapshot as the new master baseline. This does not reset tokens immediately.
+- Reset clears simulation history/fired markers and exits simulation mode.
 
 ### Rule-driven token generation and consumption
 - Simulation rules support:
@@ -122,3 +125,9 @@ The database extension adds query-aware and action-aware transition behavior on 
 
 ### Demo graphs
 - [Demo Graphs on Google Drive](https://drive.google.com/drive/folders/1UxDIrCZoKsmTPYRscQlN1PeOt96CPulP?usp=drive_link)
+
+## Notes on unit test and code coverage
+
+Our internal unit tests are part of this public repository, and reside in the 'tests' folder in root directory.
+The folder 'coverage' contains the latest report of a full Jest coverage run. To view, view the index.html either in the VSCode integrated web browser or your default browser.
+Alternatively, clone the repo, run 'npm install' and then run 'npx jest --coverage' to generate a new coverage report.

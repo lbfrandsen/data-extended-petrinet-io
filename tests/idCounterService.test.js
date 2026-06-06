@@ -11,8 +11,8 @@ describe('IdCounterService numeric IDs', () => {
         expect(service.getNextTransitionId()).toBe('t1');
     });
 
-    test('place and transition IDs fill the first numeric gap', () => {
-        // IDs are reused from the lowest available gap instead of always appending after the maximum.
+    test('place IDs fill gaps while transition IDs continue after the highest seen ID', () => {
+        // Transition IDs are not reused because simulation and SQL runtime state is keyed by transition ID.
         const service = serviceFor([
             { type: 'petri:place', id: 'p1' },
             { type: 'petri:place', id: 'p3' },
@@ -21,6 +21,16 @@ describe('IdCounterService numeric IDs', () => {
         ]);
 
         expect(service.getNextPlaceId()).toBe('p2');
+        expect(service.getNextTransitionId()).toBe('t4');
+    });
+
+    test('transition IDs are not reused after a transition was observed and then deleted', () => {
+        // This prevents fired-state and SQL bindings for a deleted transition ID from affecting a new transition.
+        let elements = [{ type: 'petri:transition', id: 't1' }];
+        const service = new IdCounterService({ getAll: () => elements });
+
+        elements = [];
+
         expect(service.getNextTransitionId()).toBe('t2');
     });
 
@@ -44,7 +54,7 @@ describe('IdCounterService numeric IDs', () => {
             { type: 'petri:transition', id: 't3' }
         ]);
 
-        expect(service.getNextTransitionId()).toBe('t1');
+        expect(service.getNextTransitionId()).toBe('t4');
     });
 
     test('malformed place IDs are ignored unless they start with p', () => {
